@@ -84,11 +84,11 @@
   function renderMap(currentId) {
     var dots = ORDER.map(function (id) {
       var n = STORY.nodes[id];
-      var cls = "";
+      var cls = "mapdot";
       if (id === currentId) cls += " on";
       if (n && n.end) cls += " end";
-      return '<i class="' + cls.trim() + '" title="Page ' +
-             id.slice(1) + '"></i>';
+      return '<button class="' + cls + '" data-go="' + id +
+             '" title="Page ' + id.slice(1) + '"></button>';
     }).join("");
     return '<div class="map">' + dots + "</div>";
   }

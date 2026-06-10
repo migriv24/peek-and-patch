@@ -397,17 +397,21 @@ body {
 
 /* Map ribbon under the window */
 .map {
-  display: flex; align-items: center; gap: 6px;
+  display: flex; align-items: center; gap: 9px;
   justify-content: center; flex-wrap: wrap;
   margin-top: 1.4rem;
 }
-.map i {
-  width: 11px; height: 11px; display: block;
+.map .mapdot {
+  width: 14px; height: 14px; padding: 0; display: block;
   border: 2px solid var(--border);
   background: rgba(255,255,255,0.4);
+  cursor: pointer;
+  transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.1s;
 }
-.map i.on { background: var(--chrome); box-shadow: 0 0 8px var(--chrome); }
-.map i.end { transform: rotate(45deg); }
+.map .mapdot:hover { transform: scale(1.25); box-shadow: 0 0 8px var(--border); background: color-mix(in srgb, var(--chrome) 50%, transparent); }
+.map .mapdot.on { background: var(--chrome); box-shadow: 0 0 8px var(--chrome); }
+.map .mapdot.end { transform: rotate(45deg); }
+.map .mapdot.end:hover { transform: rotate(45deg) scale(1.25); }
 
 /* ── Theme transition helper ────────────────────────── */
 .fade { animation: fade-swap 0.3s ease; }
