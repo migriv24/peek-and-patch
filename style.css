@@ -414,63 +414,100 @@ body {
 /* ════════════════════════════════════════════════════
    PER-PAGE THEMES
    ════════════════════════════════════════════════════ */
-/* light pages: blueberry signature border, deep ink */
+/* light pages: blueberry signature border, deep ink.
+   --halo = legibility halo behind tagged terms (white on light).
+   --lx-bg = subtle label pill behind tagged terms.            */
 body[data-theme="summer-sky"] {
-  --bg1:#CCF6FF; --bg2:#e6fbff; --bg3:#f7feff;
-  --ink:#0b2a6b; --ink-soft:#3f5fa6; --fill:#f0fbff;
+  --bg1:#A9ECFF; --bg2:#cdf5ff; --bg3:#ecfcff;
+  --ink:#0a2870; --ink-soft:#3258ad; --fill:#e0f6ff;
   --chrome:#0066FF; --chrome-ink:#fff; --border:#0066FF;
-  --cube:rgba(0,102,255,0.18); --shadow:rgba(0,50,140,0.30);
+  --cube:rgba(0,102,255,0.20); --shadow:rgba(0,50,140,0.30);
+  --halo:rgba(255,255,255,0.85); --lx-bg:rgba(255,255,255,0.5);
 }
 body[data-theme="sour-apple"] {
-  --bg1:#C7EF8E; --bg2:#e2f7c4; --bg3:#f4fde6;
-  --ink:#22420f; --ink-soft:#4e7a2a; --fill:#f1fbe2;
+  --bg1:#B2E96A; --bg2:#cef29a; --bg3:#e8fac9;
+  --ink:#1e4609; --ink-soft:#467a1f; --fill:#def3bd;
   --chrome:#0066FF; --chrome-ink:#fff; --border:#0066FF;
-  --cube:rgba(0,102,255,0.16); --shadow:rgba(40,90,0,0.28);
+  --cube:rgba(0,102,255,0.18); --shadow:rgba(40,90,0,0.28);
+  --halo:rgba(255,255,255,0.85); --lx-bg:rgba(255,255,255,0.55);
 }
 body[data-theme="blossom"] {
-  --bg1:#FFD1F3; --bg2:#ffe6f8; --bg3:#fff5fc;
-  --ink:#7a1551; --ink-soft:#b24d8a; --fill:#fff0fa;
+  --bg1:#FFB8EB; --bg2:#ffd0f4; --bg3:#ffe9fb;
+  --ink:#7d0f54; --ink-soft:#bd3d8b; --fill:#ffd6f5;
   --chrome:#0066FF; --chrome-ink:#fff; --border:#0066FF;
-  --cube:rgba(0,102,255,0.15); --shadow:rgba(150,20,100,0.26);
+  --cube:rgba(0,102,255,0.17); --shadow:rgba(150,20,100,0.26);
+  --halo:rgba(255,255,255,0.85); --lx-bg:rgba(255,255,255,0.6);
 }
 body[data-theme="bubblegum"] {
-  --bg1:#FF71DA; --bg2:#ffa6e8; --bg3:#ffd9f4;
-  --ink:#5e0a45; --ink-soft:#a32f80; --fill:#ffe1f6;
+  --bg1:#FF54CF; --bg2:#ff85e0; --bg3:#ffbcef;
+  --ink:#5a0640; --ink-soft:#a3257b; --fill:#ffcdf2;
   --chrome:#0066FF; --chrome-ink:#fff; --border:#0066FF;
-  --cube:rgba(0,102,255,0.18); --shadow:rgba(140,10,95,0.3);
+  --cube:rgba(0,102,255,0.20); --shadow:rgba(140,10,95,0.3);
+  --halo:rgba(255,255,255,0.85); --lx-bg:rgba(255,255,255,0.7);
 }
 body[data-theme="amber"] {
-  --bg1:#FF8C2B; --bg2:#ffb568; --bg3:#ffe1bf;
-  --ink:#5a2600; --ink-soft:#964a14; --fill:#fff0dd;
+  --bg1:#FF7E12; --bg2:#ffa64a; --bg3:#ffd6a6;
+  --ink:#561f00; --ink-soft:#9a4708; --fill:#ffe7cf;
   --chrome:#0066FF; --chrome-ink:#fff; --border:#0066FF;
-  --cube:rgba(0,102,255,0.18); --shadow:rgba(120,55,0,0.32);
+  --cube:rgba(0,102,255,0.20); --shadow:rgba(120,55,0,0.32);
+  --halo:rgba(255,255,255,0.85); --lx-bg:rgba(255,255,255,0.65);
 }
 
-/* dark pages: white ink, palette colors become the border */
+/* dark pages: white ink, palette colors become the border.
+   --halo darkens; --lx-bg becomes a near-white sticker so any
+   tag color stays readable over the dark fill.                 */
 body[data-theme="blueberry"] {
-  --bg1:#0066FF; --bg2:#2f86ff; --bg3:#69abff;
-  --ink:#ffffff; --ink-soft:#cfe2ff; --fill:#0a3da8;
+  --bg1:#0A60FF; --bg2:#2f86ff; --bg3:#62a6ff;
+  --ink:#ffffff; --ink-soft:#cfe2ff; --fill:#0937a0;
   --chrome:#CCF6FF; --chrome-ink:#06337a; --border:#CCF6FF;
-  --cube:rgba(204,246,255,0.22); --shadow:rgba(0,20,70,0.55);
+  --cube:rgba(204,246,255,0.24); --shadow:rgba(0,20,70,0.55);
+  --halo:rgba(0,20,60,0.6); --lx-bg:rgba(255,255,255,0.9);
 }
 body[data-theme="oxblood"] {
-  --bg1:#8A2233; --bg2:#6e1828; --bg3:#4d0f1b;
-  --ink:#ffe4ea; --ink-soft:#e3a3b1; --fill:#5e1422;
+  --bg1:#94203A; --bg2:#71182B; --bg3:#4a0e1a;
+  --ink:#ffe4ea; --ink-soft:#e89aab; --fill:#5e131f;
   --chrome:#FFD1F3; --chrome-ink:#6e1828; --border:#FFD1F3;
-  --cube:rgba(255,209,243,0.16); --shadow:rgba(20,0,5,0.6);
+  --cube:rgba(255,209,243,0.18); --shadow:rgba(20,0,5,0.6);
+  --halo:rgba(20,0,5,0.55); --lx-bg:rgba(255,255,255,0.9);
 }
 body[data-theme="segfault"] {
-  --bg1:#5B2A86; --bg2:#451f68; --bg3:#2e1545;
-  --ink:#f0e4ff; --ink-soft:#c4a6ec; --fill:#3d1c5c;
+  --bg1:#5E2790; --bg2:#481d70; --bg3:#2d1347;
+  --ink:#f1e4ff; --ink-soft:#c9a6f2; --fill:#3c1a5e;
   --chrome:#FF71DA; --chrome-ink:#3d1c5c; --border:#FF71DA;
-  --cube:rgba(255,113,218,0.18); --shadow:rgba(10,0,25,0.6);
+  --cube:rgba(255,113,218,0.20); --shadow:rgba(10,0,25,0.6);
+  --halo:rgba(10,0,25,0.55); --lx-bg:rgba(255,255,255,0.9);
 }
 body[data-theme="system-black"] {
   --bg1:#14141a; --bg2:#0d0d12; --bg3:#050507;
   --ink:#ffffff; --ink-soft:#7fdca0; --fill:#0c0c11;
   --chrome:#0066FF; --chrome-ink:#fff; --border:#0066FF;
-  --cube:rgba(0,102,255,0.14); --shadow:rgba(0,0,0,0.75);
+  --cube:rgba(0,102,255,0.16); --shadow:rgba(0,0,0,0.75);
+  --halo:rgba(0,0,0,0.6); --lx-bg:rgba(255,255,255,0.92);
 }
+
+/* ── Lexicon: tagged story terms ────────────────────── */
+.lx {
+  font-weight: 700;
+  background: var(--lx-bg, rgba(255,255,255,0.5));
+  border-radius: 4px;
+  padding: 0 0.26em;
+  cursor: help;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  text-shadow: 0 0 2px var(--halo, transparent);
+}
+.lx:hover { text-decoration: underline; text-underline-offset: 2px; }
+
+.lx-love       { color:#FF2EA0; }
+.lx-creature   { color:#0E9E78; }
+.lx-system     { color:#2F7DFF; }
+.lx-desktop    { color:#C77C00; }
+.lx-metrochord { color:#FF5A2B; }
+.lx-starbloom  { color:#6FA814; }
+.lx-highvista  { color:#1499BE; }
+.lx-cubic      { color:#6A5CFF; }
+.lx-frame      { color:#6B7488; }
+.lx-conflict   { color:#E12E48; }
 /* On the black ending, the system text glows like an old terminal */
 body[data-theme="system-black"] .b-sys { color:#5eff8f; border-left-color:#5eff8f; }
 body[data-theme="system-black"] .b-sys::before { color:#5eff8f; }

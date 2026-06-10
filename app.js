@@ -19,32 +19,62 @@
       .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   }
 
+  /* ── lexicon tagging engine ──
+     Build one combined regex from window.LEXICON, each entry in its
+     own capture group, so a single pass wraps every recognized term
+     in a colored label without re-scanning inserted markup. */
+  var LEX = window.LEXICON || [];
+  var LEX_RE = LEX.length
+    ? new RegExp(LEX.map(function (e) {
+        return "(\\b(?:" + e.pattern + ")\\b)";
+      }).join("|"), "gi")
+    : null;
+
+  function escAttr(s) { return String(s).replace(/"/g, "&quot;"); }
+
+  function tagify(escaped) {
+    if (!LEX_RE) return escaped;
+    return escaped.replace(LEX_RE, function () {
+      for (var i = 0; i < LEX.length; i++) {
+        if (arguments[i + 1] != null) {
+          var e = LEX[i];
+          return '<span class="lx ' + e.cls + '" title="' +
+                 escAttr(e.title) + '">' + arguments[i + 1] + "</span>";
+        }
+      }
+      return arguments[0];
+    });
+  }
+
+  /* escape + highlight recognized terms — used for all prose */
+  function fmt(s) { return tagify(esc(s)); }
+
   /* ── render one content block ── */
   function renderBlock(b) {
     switch (b.t) {
       case "boot":
-        return '<div class="b-boot">' + esc(b.x) + "</div>";
+        return '<div class="b-boot">' + fmt(b.x) + "</div>";
       case "sys":
-        return '<p class="b-sys">' + esc(b.x) +
+        return '<p class="b-sys">' + fmt(b.x) +
                ' <span class="blink">_</span></p>';
       case "p":
-        return '<p class="b-p">' + esc(b.x) + "</p>";
+        return '<p class="b-p">' + fmt(b.x) + "</p>";
       case "lore":
         return '<div class="b-lore"><span class="tag">[!] CODEX</span>' +
-               '<p>' + esc(b.x) + "</p></div>";
+               '<p>' + fmt(b.x) + "</p></div>";
       case "note":
         return '<aside class="b-note"><span class="qmark">[?] FOOTNOTE.exe</span>' +
-               esc(b.x) + "</aside>";
+               fmt(b.x) + "</aside>";
       case "rule":
-        return '<p class="b-rule">' + esc(b.x) + "</p>";
+        return '<p class="b-rule">' + fmt(b.x) + "</p>";
       case "beat":
         var solo = /^nothing\.?$/i.test(b.x.trim());
         return '<p class="b-beat' + (solo ? " solo" : "") + '">' +
-               esc(b.x) + "</p>";
+               fmt(b.x) + "</p>";
       case "say":
         return '<div class="b-say">' +
                '<span class="say-name">' + esc(b.who) + "</span>" +
-               '<span class="say-line">' + esc(b.x) + "</span></div>";
+               '<span class="say-line">' + fmt(b.x) + "</span></div>";
       default:
         return "";
     }
@@ -99,9 +129,6 @@
 
     var body = (node.blocks || []).map(renderBlock).join("");
 
-    var title = node.title
-      ? '<h1 class="page-title">' + esc(node.title) + "</h1>" : "";
-
     var html =
       '<article class="window fade">' +
         '<div class="titlebar">' +
@@ -115,7 +142,7 @@
           "<span>" + esc(node.label) + " / 10</span>" +
         "</div>" +
         '<div class="win-body">' +
-          title + body + renderNav(node, id) +
+          body + renderNav(node, id) +
         "</div>" +
         '<div class="statusbar">' +
           "<span>SYSTEM 37 // beta</span>" +
