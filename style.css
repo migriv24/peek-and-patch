@@ -1,0 +1,488 @@
+/* ════════════════════════════════════════════════════════════
+   PEEK AND PATCH — System 37 reader
+   8-bit window chrome over a frutiger-aero gradient.
+   Distinct from the biology pages: cubes instead of bubbles,
+   pixel fonts, CRT scanlines, thick palette-colored borders.
+   ════════════════════════════════════════════════════════════ */
+
+/* ── Reset & tokens ─────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --pixel:  'Press Start 2P', monospace;       /* chrome, headings, buttons */
+  --term:   'VT323', 'Courier New', monospace; /* body / readable terminal  */
+  --blueberry: #0066FF;
+  --max-w:  720px;
+
+  /* defaults — every theme overrides these on <body data-theme> */
+  --bg1: #CCF6FF;  --bg2: #e6fbff;  --bg3: #f5feff;
+  --ink: #0b2a6b;          /* body text                        */
+  --ink-soft: #3a5a9e;     /* muted text                       */
+  --fill: #f3fbff;         /* window body fill                 */
+  --chrome: #0066FF;       /* title-bar / accent               */
+  --chrome-ink: #ffffff;   /* text on the title-bar            */
+  --border: #0066FF;       /* the signature thick outline      */
+  --cube: rgba(0,102,255,0.20);
+  --shadow: rgba(0,40,120,0.35);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--term);
+  color: var(--ink);
+  background: linear-gradient(165deg, var(--bg1) 0%, var(--bg2) 48%, var(--bg3) 100%) fixed;
+  min-height: 100vh;
+  line-height: 1.55;
+  overflow-x: hidden;
+  transition: background 0.5s ease, color 0.5s ease;
+  image-rendering: pixelated;
+}
+
+::selection { background: var(--chrome); color: var(--chrome-ink); }
+
+::-webkit-scrollbar { width: 12px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+
+/* ── Floating pixel cubes (the frutiger-aero ambience) ── */
+#cube-field { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.cube {
+  position: absolute;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.65) 0%, rgba(255,255,255,0) 45%),
+    var(--cube);
+  border: 2px solid rgba(255,255,255,0.55);
+  box-shadow: inset 0 0 0 2px rgba(255,255,255,0.18);
+  animation: cube-drift var(--d, 18s) var(--del, 0s) ease-in-out infinite alternate;
+  will-change: transform;
+}
+@keyframes cube-drift {
+  from { transform: translate(0,0) rotate(0deg); }
+  to   { transform: translate(34px, -60px) rotate(14deg); }
+}
+
+/* ── Faint CRT scanlines over everything ────────────── */
+#scanlines {
+  position: fixed; inset: 0; z-index: 60; pointer-events: none;
+  background: repeating-linear-gradient(
+    180deg, rgba(0,0,0,0.05) 0px, rgba(0,0,0,0.05) 1px,
+    transparent 1px, transparent 3px);
+  mix-blend-mode: multiply; opacity: 0.5;
+}
+
+/* ── Layout shell ───────────────────────────────────── */
+.stage {
+  position: relative; z-index: 1;
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 2.2rem 1.1rem 4rem;
+}
+
+/* ════════════════════════════════════════════════════
+   THE WINDOW (each page is a System 37 window)
+   ════════════════════════════════════════════════════ */
+.window {
+  background: var(--fill);
+  border: 4px solid var(--border);
+  border-radius: 6px;
+  box-shadow:
+    10px 10px 0 0 var(--shadow),               /* chunky pixel drop  */
+    inset 0 0 0 2px rgba(255,255,255,0.5);
+  overflow: hidden;
+  animation: boot-in 0.35s ease both;
+}
+@keyframes boot-in {
+  from { transform: translateY(10px) scale(0.99); opacity: 0; }
+  to   { transform: none; opacity: 1; }
+}
+
+/* Title bar */
+.titlebar {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0) 55%),
+    var(--chrome);
+  color: var(--chrome-ink);
+  border-bottom: 4px solid var(--border);
+  display: flex; align-items: center; gap: 0.6rem;
+  padding: 0.55rem 0.7rem;
+}
+.tb-dots { display: flex; gap: 5px; }
+.tb-dots i {
+  width: 12px; height: 12px; display: block;
+  border: 2px solid var(--border);
+  background: rgba(255,255,255,0.6);
+}
+.tb-title {
+  font-family: var(--pixel);
+  font-size: 0.6rem;
+  letter-spacing: 0.02em;
+  text-shadow: 1px 1px 0 var(--shadow);
+  flex: 1;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.tb-x {
+  font-family: var(--pixel); font-size: 0.6rem;
+  width: 20px; height: 20px; display: grid; place-items: center;
+  border: 2px solid var(--border);
+  background: rgba(255,255,255,0.6); color: var(--border);
+}
+
+/* Sub-bar: region + page label */
+.subbar {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.9rem;
+  border-bottom: 3px dashed color-mix(in srgb, var(--border) 45%, transparent);
+  font-family: var(--pixel);
+  font-size: 0.5rem;
+  letter-spacing: 0.05em;
+  color: var(--ink-soft);
+  background: rgba(255,255,255,0.25);
+}
+.subbar .region::before { content: "◰ "; }
+
+/* Window body */
+.win-body { padding: 1.4rem 1.3rem 1.6rem; }
+
+/* Page title */
+.page-title {
+  font-family: var(--pixel);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--ink);
+  margin-bottom: 1.3rem;
+  text-shadow: 2px 2px 0 color-mix(in srgb, var(--border) 30%, transparent);
+}
+
+/* ── Block: narration ───────────────────────────────── */
+.b-p {
+  font-size: 1.28rem;
+  margin: 0 0 1.15rem;
+  color: var(--ink);
+}
+
+/* ── Block: simulation boot / welcome text ──────────── */
+.b-boot {
+  font-size: 1.22rem;
+  border: 3px solid var(--border);
+  background: rgba(255,255,255,0.4);
+  border-radius: 4px;
+  padding: 0.9rem 1rem;
+  margin-bottom: 1.3rem;
+  box-shadow: inset 0 0 0 2px rgba(255,255,255,0.5);
+}
+.b-boot::before {
+  content: "▶ SYSTEM 37 // BETA";
+  display: block;
+  font-family: var(--pixel); font-size: 0.5rem;
+  color: var(--chrome); margin-bottom: 0.55rem; letter-spacing: 0.06em;
+}
+
+/* ── Block: terminal / system line ──────────────────── */
+.b-sys {
+  font-family: var(--term);
+  font-size: 1.15rem;
+  letter-spacing: 0.02em;
+  color: var(--ink-soft);
+  background: color-mix(in srgb, var(--border) 10%, transparent);
+  border-left: 4px solid var(--border);
+  padding: 0.35rem 0.8rem;
+  margin: 0 0 1.1rem;
+}
+.b-sys::before { content: "> "; color: var(--chrome); font-weight: bold; }
+.b-sys .blink { animation: blink 1s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+
+/* ── Block: (!) CODEX data-packet ───────────────────── */
+.b-lore {
+  position: relative;
+  border: 4px solid var(--border);
+  border-radius: 5px;
+  background: rgba(255,255,255,0.55);
+  padding: 1rem 1.1rem 1.05rem;
+  margin: 1.4rem 0;
+  box-shadow: 6px 6px 0 0 var(--shadow), inset 0 0 0 2px rgba(255,255,255,0.6);
+}
+.b-lore .tag {
+  position: absolute; top: -12px; left: 14px;
+  font-family: var(--pixel); font-size: 0.5rem;
+  background: var(--chrome); color: var(--chrome-ink);
+  border: 2px solid var(--border);
+  padding: 3px 7px; letter-spacing: 0.05em;
+}
+.b-lore p { font-size: 1.18rem; }
+
+/* ── Block: (?) sticky-note footnote (Patch's post-its) ─ */
+.b-note {
+  position: relative;
+  background: #FFF6A8;
+  color: #4a3c00;
+  border: 2px solid rgba(0,0,0,0.12);
+  padding: 0.95rem 1rem 0.85rem;
+  margin: 1.35rem 0 1.4rem 0.5rem;
+  font-size: 1.16rem;
+  line-height: 1.45;
+  box-shadow: 4px 5px 9px rgba(0,0,0,0.18);
+  transform: rotate(-1.4deg);
+}
+.b-note::before {           /* tape */
+  content: ""; position: absolute; top: -9px; left: 50%;
+  width: 60px; height: 18px; transform: translateX(-50%) rotate(2deg);
+  background: rgba(255,255,255,0.5);
+  border: 1px solid rgba(0,0,0,0.06);
+}
+.b-note .qmark {
+  font-family: var(--pixel); font-size: 0.55rem;
+  color: #b59500; display: block; margin-bottom: 0.45rem;
+}
+.b-note:nth-of-type(even) { transform: rotate(1.2deg); background: #C9F7C0; color: #1f3d18; }
+.b-note:nth-of-type(even) .qmark { color: #4d8c3e; }
+
+/* ── Block: the recurring refrain ───────────────────── */
+.b-rule {
+  text-align: center;
+  font-family: var(--pixel);
+  font-size: 0.78rem;
+  line-height: 1.7;
+  color: var(--chrome);
+  margin: 2rem auto 1.6rem;
+  padding: 1rem 0.5rem;
+  max-width: 90%;
+  border-top: 3px solid color-mix(in srgb, var(--border) 50%, transparent);
+  border-bottom: 3px solid color-mix(in srgb, var(--border) 50%, transparent);
+  text-shadow: 0 0 14px color-mix(in srgb, var(--chrome) 55%, transparent);
+}
+
+/* ── Block: stark single-line beat ──────────────────── */
+.b-beat {
+  font-family: var(--pixel);
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: var(--ink);
+  margin: 1.6rem 0;
+  padding-left: 0.2rem;
+}
+.b-beat.solo {              /* the "Nothing." beats */
+  text-align: center;
+  font-size: 1rem;
+  color: var(--ink-soft);
+  letter-spacing: 0.08em;
+  margin: 2.2rem 0;
+  opacity: 0.85;
+}
+
+/* ── Block: dialogue (visual-novel nameplate) ───────── */
+.b-say {
+  display: grid; grid-template-columns: auto 1fr; gap: 0.7rem;
+  align-items: start;
+  margin: 0 0 1.05rem;
+}
+.say-name {
+  font-family: var(--pixel); font-size: 0.5rem;
+  background: var(--chrome); color: var(--chrome-ink);
+  border: 2px solid var(--border);
+  padding: 5px 7px; white-space: nowrap;
+  align-self: start;
+  box-shadow: 2px 2px 0 var(--shadow);
+}
+.say-line {
+  font-size: 1.28rem;
+  border: 2px solid var(--border);
+  border-radius: 4px;
+  background: rgba(255,255,255,0.45);
+  padding: 0.5rem 0.8rem;
+}
+.say-line::before { content: "\201C"; }
+.say-line::after  { content: "\201D"; }
+
+/* ════════════════════════════════════════════════════
+   CHOICES / NAVIGATION
+   ════════════════════════════════════════════════════ */
+.prompt {
+  font-family: var(--pixel);
+  font-size: 0.62rem;
+  color: var(--ink-soft);
+  text-align: center;
+  margin: 2rem 0 1rem;
+  letter-spacing: 0.05em;
+}
+.prompt::before { content: "◆ "; color: var(--chrome); }
+.prompt::after  { content: " ◆"; color: var(--chrome); }
+
+.choices { display: flex; flex-direction: column; gap: 0.85rem; margin-top: 0.5rem; }
+
+.choice {
+  display: block; width: 100%; text-align: left;
+  font-family: var(--term); font-size: 1.3rem;
+  color: var(--chrome-ink);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 55%),
+    var(--chrome);
+  border: 3px solid var(--border);
+  border-radius: 5px;
+  padding: 0.8rem 1rem;
+  cursor: pointer;
+  box-shadow: 5px 5px 0 0 var(--shadow);
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
+  position: relative;
+}
+.choice::before {
+  content: "▸"; margin-right: 0.55rem; font-weight: bold;
+}
+.choice:hover { transform: translate(2px, 2px); box-shadow: 3px 3px 0 0 var(--shadow); }
+.choice:active { transform: translate(5px, 5px); box-shadow: 0 0 0 0 var(--shadow); }
+
+/* Single forward link */
+.nextbar { margin-top: 2rem; display: flex; justify-content: flex-end; }
+.next-btn {
+  font-family: var(--pixel); font-size: 0.6rem;
+  color: var(--chrome-ink);
+  background: var(--chrome);
+  border: 3px solid var(--border);
+  border-radius: 5px;
+  padding: 0.7rem 1rem;
+  cursor: pointer;
+  box-shadow: 5px 5px 0 0 var(--shadow);
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
+  letter-spacing: 0.04em;
+}
+.next-btn::after { content: " ▶▶"; }
+.next-btn:hover { transform: translate(2px,2px); box-shadow: 3px 3px 0 0 var(--shadow); }
+.next-btn:active { transform: translate(5px,5px); box-shadow: 0 0 0 0 var(--shadow); }
+
+/* ── Ending panel ───────────────────────────────────── */
+.ending {
+  text-align: center;
+  margin-top: 2.2rem;
+  padding: 1.4rem 1rem;
+  border: 3px dashed color-mix(in srgb, var(--border) 55%, transparent);
+  border-radius: 5px;
+}
+.ending .stamp {
+  font-family: var(--pixel); font-size: 1rem;
+  color: var(--chrome);
+  text-shadow: 0 0 16px color-mix(in srgb, var(--chrome) 60%, transparent);
+  margin-bottom: 0.4rem;
+}
+.ending .label {
+  font-family: var(--pixel); font-size: 0.5rem;
+  color: var(--ink-soft); letter-spacing: 0.1em; margin-bottom: 1.2rem;
+}
+.ending-actions { display: flex; gap: 0.7rem; justify-content: center; flex-wrap: wrap; }
+
+/* ── Status bar (footer of window) ──────────────────── */
+.statusbar {
+  border-top: 3px solid var(--border);
+  background: rgba(255,255,255,0.3);
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.9rem;
+  font-family: var(--pixel); font-size: 0.46rem;
+  color: var(--ink-soft); letter-spacing: 0.04em;
+}
+.statusbar .sb-btn {
+  font-family: var(--pixel); font-size: 0.46rem;
+  color: var(--ink-soft); background: transparent;
+  border: 2px solid color-mix(in srgb, var(--border) 50%, transparent);
+  padding: 4px 7px; cursor: pointer;
+}
+.statusbar .sb-btn:hover { color: var(--chrome); border-color: var(--chrome); }
+
+/* Map ribbon under the window */
+.map {
+  display: flex; align-items: center; gap: 6px;
+  justify-content: center; flex-wrap: wrap;
+  margin-top: 1.4rem;
+}
+.map i {
+  width: 11px; height: 11px; display: block;
+  border: 2px solid var(--border);
+  background: rgba(255,255,255,0.4);
+}
+.map i.on { background: var(--chrome); box-shadow: 0 0 8px var(--chrome); }
+.map i.end { transform: rotate(45deg); }
+
+/* ── Theme transition helper ────────────────────────── */
+.fade { animation: fade-swap 0.3s ease; }
+@keyframes fade-swap { from { opacity: 0.2; } to { opacity: 1; } }
+
+/* ════════════════════════════════════════════════════
+   PER-PAGE THEMES
+   ════════════════════════════════════════════════════ */
+/* light pages: blueberry signature border, deep ink */
+body[data-theme="summer-sky"] {
+  --bg1:#CCF6FF; --bg2:#e6fbff; --bg3:#f7feff;
+  --ink:#0b2a6b; --ink-soft:#3f5fa6; --fill:#f0fbff;
+  --chrome:#0066FF; --chrome-ink:#fff; --border:#0066FF;
+  --cube:rgba(0,102,255,0.18); --shadow:rgba(0,50,140,0.30);
+}
+body[data-theme="sour-apple"] {
+  --bg1:#C7EF8E; --bg2:#e2f7c4; --bg3:#f4fde6;
+  --ink:#22420f; --ink-soft:#4e7a2a; --fill:#f1fbe2;
+  --chrome:#0066FF; --chrome-ink:#fff; --border:#0066FF;
+  --cube:rgba(0,102,255,0.16); --shadow:rgba(40,90,0,0.28);
+}
+body[data-theme="blossom"] {
+  --bg1:#FFD1F3; --bg2:#ffe6f8; --bg3:#fff5fc;
+  --ink:#7a1551; --ink-soft:#b24d8a; --fill:#fff0fa;
+  --chrome:#0066FF; --chrome-ink:#fff; --border:#0066FF;
+  --cube:rgba(0,102,255,0.15); --shadow:rgba(150,20,100,0.26);
+}
+body[data-theme="bubblegum"] {
+  --bg1:#FF71DA; --bg2:#ffa6e8; --bg3:#ffd9f4;
+  --ink:#5e0a45; --ink-soft:#a32f80; --fill:#ffe1f6;
+  --chrome:#0066FF; --chrome-ink:#fff; --border:#0066FF;
+  --cube:rgba(0,102,255,0.18); --shadow:rgba(140,10,95,0.3);
+}
+body[data-theme="amber"] {
+  --bg1:#FF8C2B; --bg2:#ffb568; --bg3:#ffe1bf;
+  --ink:#5a2600; --ink-soft:#964a14; --fill:#fff0dd;
+  --chrome:#0066FF; --chrome-ink:#fff; --border:#0066FF;
+  --cube:rgba(0,102,255,0.18); --shadow:rgba(120,55,0,0.32);
+}
+
+/* dark pages: white ink, palette colors become the border */
+body[data-theme="blueberry"] {
+  --bg1:#0066FF; --bg2:#2f86ff; --bg3:#69abff;
+  --ink:#ffffff; --ink-soft:#cfe2ff; --fill:#0a3da8;
+  --chrome:#CCF6FF; --chrome-ink:#06337a; --border:#CCF6FF;
+  --cube:rgba(204,246,255,0.22); --shadow:rgba(0,20,70,0.55);
+}
+body[data-theme="oxblood"] {
+  --bg1:#8A2233; --bg2:#6e1828; --bg3:#4d0f1b;
+  --ink:#ffe4ea; --ink-soft:#e3a3b1; --fill:#5e1422;
+  --chrome:#FFD1F3; --chrome-ink:#6e1828; --border:#FFD1F3;
+  --cube:rgba(255,209,243,0.16); --shadow:rgba(20,0,5,0.6);
+}
+body[data-theme="segfault"] {
+  --bg1:#5B2A86; --bg2:#451f68; --bg3:#2e1545;
+  --ink:#f0e4ff; --ink-soft:#c4a6ec; --fill:#3d1c5c;
+  --chrome:#FF71DA; --chrome-ink:#3d1c5c; --border:#FF71DA;
+  --cube:rgba(255,113,218,0.18); --shadow:rgba(10,0,25,0.6);
+}
+body[data-theme="system-black"] {
+  --bg1:#14141a; --bg2:#0d0d12; --bg3:#050507;
+  --ink:#ffffff; --ink-soft:#7fdca0; --fill:#0c0c11;
+  --chrome:#0066FF; --chrome-ink:#fff; --border:#0066FF;
+  --cube:rgba(0,102,255,0.14); --shadow:rgba(0,0,0,0.75);
+}
+/* On the black ending, the system text glows like an old terminal */
+body[data-theme="system-black"] .b-sys { color:#5eff8f; border-left-color:#5eff8f; }
+body[data-theme="system-black"] .b-sys::before { color:#5eff8f; }
+body[data-theme="system-black"] .b-beat.solo { color:#8a8a96; }
+
+/* ── Responsive ─────────────────────────────────────── */
+@media (max-width: 560px) {
+  .stage { padding: 1.4rem 0.7rem 3rem; }
+  .page-title { font-size: 0.8rem; }
+  .b-p, .say-line { font-size: 1.18rem; }
+  .b-say { grid-template-columns: 1fr; gap: 0.35rem; }
+  .window { box-shadow: 6px 6px 0 0 var(--shadow), inset 0 0 0 2px rgba(255,255,255,0.5); }
+  .b-rule { font-size: 0.66rem; }
+  .b-beat { font-size: 0.72rem; }
+}

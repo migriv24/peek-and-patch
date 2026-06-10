@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Peek and Patch — System 37</title>
+  <meta name="description" content="Peek and Patch — a branching short story set in System 37, by Miguel Rivas." />
+
+  <!-- Pixel fonts: chrome/headings (Press Start 2P) + readable body (VT323) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body data-theme="summer-sky">
+
+  <!-- frutiger-aero ambience: floating pixel cubes + CRT scanlines -->
+  <div id="cube-field"></div>
+  <div id="scanlines"></div>
+
+  <main class="stage" id="stage"><!-- rendered by app.js --></main>
+
+  <script src="story.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
