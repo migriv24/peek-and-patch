@@ -31,10 +31,10 @@ window.LEXICON = [
     title: "Starbloom — one of the three regions of The Desktop" },
 
   { id: "metrochord", cls: "lx-metrochord", pattern: "Metrochord",
-    title: "Metrochord — most populous region; Peek's home" },
+    title: "Metrochord — Peek's home; a city above the keyboard catacombs" },
 
   { id: "desktop",    cls: "lx-desktop",    pattern: "Desktop",
-    title: "The Desktop — the location these regions sit on" },
+    title: "The Desktop — the habitable surface above the Kernel Sea" },
 
   { id: "cubic",      cls: "lx-cubic",      pattern: "Cubics?",
     title: "Cubic — a cube-bodied NPC species (Peek is one)" },

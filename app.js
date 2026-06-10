@@ -97,7 +97,7 @@
   function renderNav(node, id) {
     if (node.choices) {
       var prompt = node.prompt
-        ? '<p class="prompt">' + esc(node.prompt) + "</p>" : "";
+        ? '<p class="prompt">' + fmt(node.prompt) + "</p>" : "";
       var btns = node.choices.map(function (c, i) {
         return '<button class="choice" data-go="' + esc(c.to) + '">' +
                esc(c.x) + "</button>";

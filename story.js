@@ -42,9 +42,9 @@ window.STORY = {
         { t: "p", x: "He trips over his shirt retrieving it, he stays on the ground but rolls around to face up at the tree. After some projected sounds of rustling above him, Peek sees a strange creature in the branches." },
         { t: "lore", x: "This creature is known as a Phong. It is known for interpolation between different objects. Its appearance is similar to a lizard with post-it notes as fur." },
         { t: "p", x: "The skybox's gradient of purples and oranges, mixed with the light rays tracing along the creature's edges, gives it a rather special appearance to Peek. He sets down his sling-sphere and looks at it a little longer than he means to." },
-        { t: "p", x: "Peek's father had taught him that creatures change their behavior the darker it gets. The Phong may be gentle and kind presently, but the clouds are fraying at their edges now. The LOD is dropping, and the shadows are growing harder by the frame every second. Young Peek has two conflicts residing within him." }
+        { t: "p", x: "Peek's father had taught him that creatures change their behavior the darker it gets. The Phong may be gentle and kind presently, but the clouds are fraying at their edges now. The LOD is dropping, and the shadows are growing harder by the frame every second." }
       ],
-      prompt: "Which will you select?",
+      prompt: "Young Peek has two conflicts residing within him.",
       choices: [
         { x: "\"I want to see that fuzzy thing more!\"", to: "p2" },
         { x: "\"I should run away!\"", to: "p3" }
@@ -68,9 +68,9 @@ window.STORY = {
         { t: "p", x: "Occupations are important in System 37. Peek's father is a hunter. In Metrochord, this is a complicated thing to be. Hunters extract resources from creatures and trade them for bits, and they manage creature populations across the Desktop. In a city where most NPCs never leave the render distance of a market or a Thread Boiler tap, the work can seem brutal to those who don't understand it. In Starbloom it is simply a job. In Metrochord it is something people have opinions about. Those in High Vista pretend to not see it." },
         { t: "p", x: "Greens and blues, going to purples. Purples going to black. The sun's descent synchronized with the changing colors, and Peek felt the rule his father had given him load into the front of his mind whether he wanted it to or not. Purple and black means the creature is in its nocturnal state. Purple and black means it's hungry. Peek remembered a specific funny line his dad would say, “Purple and black, get it on its back! And don't forget to take out the jelly.” Where jelly didn't really have much significance." },
         { t: "p", x: "What his father had never said, not once, was what you were supposed to do when the creature had already put a sticky note on your shirt. One that was already smiling at you." },
-        { t: "p", x: "Patch's fur is fully black and purple now. Whatever transformation has occurred is complete. Its stomach rumbles. It is hungry. Young Peek has two conflicts residing within him." }
+        { t: "p", x: "Patch's fur is fully black and purple now. Whatever transformation has occurred is complete. Its stomach rumbles. It is hungry." }
       ],
-      prompt: "Which will you select?",
+      prompt: "Young Peek has two conflicts residing within him.",
       choices: [
         { x: "\"Maybe it won't eat me if I feed it something else?\"", to: "p4" },
         { x: "\"I should listen to Dad.\"", to: "p5" }
@@ -92,9 +92,9 @@ window.STORY = {
         { t: "beat", x: "Peek runs faster." },
         { t: "p", x: "The park ends. The city thins. The ground ahead loses its color and texture in the way that means the renderer has stopped trying. Peek has reached the outskirts of the Starbloom glitch zone, a wide stretch of pale sandy ground and enormous boulders that sit wrong in the landscape, their shadows pointing in directions that don't match the light. The air here has a faint haze from segfault ore deposits in the rock. No creatures spawn in the glitch zone. Peek knows this. He also knows the ground can't be trusted." },
         { t: "note", x: "Effects of Glitch Zones include: frequent collision failures, gravitational anomalies, non-euclidean geometry, and increased probability of hallucinations. In the far distance, past the boulders and the pale sand, the Kernel Sea is visible as a thin dark line along the horizon." },
-        { t: "p", x: "Peek looks back at the lights of Metrochord, warm and orange behind him. Then at the boulders ahead. Young Peek's eyes are beginning to water, and two conflicts reside within him." }
+        { t: "p", x: "Peek looks back at the lights of Metrochord, warm and orange behind him. Then at the boulders ahead. Young Peek's eyes are beginning to water." }
       ],
-      prompt: "Which will you select?",
+      prompt: "Two conflicts reside within him.",
       choices: [
         { x: "\"Square up Peek! You've been in the glitch zone before!\"", to: "p6" },
         { x: "\"I want to go home.\"", to: "p8" }
