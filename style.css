@@ -510,6 +510,11 @@ body[data-theme="system-black"] {
 .lx-cubic      { color:#6A5CFF; }
 .lx-frame      { color:#6B7488; }
 .lx-conflict   { color:#E12E48; }
+.lx-npc        { color:#2F7DFF; }
+.lx-user       { color:#E8590C; }
+.lx-admin      { color:#7048E8; }
+.lx-recyclebin { color:#2F9E44; }
+.lx-artgarden  { color:#E64980; }
 /* On the black ending, the system text glows like an old terminal */
 body[data-theme="system-black"] .b-sys { color:#5eff8f; border-left-color:#5eff8f; }
 body[data-theme="system-black"] .b-sys::before { color:#5eff8f; }

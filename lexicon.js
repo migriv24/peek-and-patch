@@ -24,6 +24,12 @@ window.LEXICON = [
   { id: "highvista",  cls: "lx-highvista",  pattern: "High Vista",
     title: "High Vista — one of the three regions of The Desktop" },
 
+  { id: "recyclebin", cls: "lx-recyclebin", pattern: "Recycle Bin",
+    title: "Recycle Bin — a passage between rendered reality and the code beneath" },
+
+  { id: "artgarden",  cls: "lx-artgarden",  pattern: "ArtGarden",
+    title: "ArtGarden — an application; its NPCs are known for mystique and beauty" },
+
   { id: "system",     cls: "lx-system",     pattern: "System 37",
     title: "System 37 — the digital world this simulation runs in" },
 
@@ -45,6 +51,15 @@ window.LEXICON = [
   { id: "frame",      cls: "lx-frame",      pattern: "frames?",
     title: "frame — a unit of simulation time" },
 
+  { id: "admin",      cls: "lx-admin",      pattern: "admins?",
+    title: "admin — a system authority (e.g. Task Manager); above NPCs" },
+
+  { id: "user",       cls: "lx-user",       pattern: "Users?",
+    title: "User — the one reading/observing the simulation from outside" },
+
+  { id: "npc",        cls: "lx-npc",        pattern: "NPCs?",
+    title: "NPC — a Non-Playable Consciousness; the world's inhabitants" },
+
   { id: "conflict",   cls: "lx-conflict",   pattern: "conflicts?|contradictions?",
-    title: "conflict / contradiction — Peek's inner tension" }
+    title: "conflict / contradiction — the character's inner tension" }
 ];
